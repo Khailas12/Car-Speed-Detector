@@ -46,6 +46,8 @@ def multiple_car_tracker():
                 car_side1.pop(car_track, None)
                 car_side2.pop(car_track, None)
                 
+        
+            if not (frame_counter % 20):
                 gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
                 cars = dataset.detectMultiScale(
                     gray_scale,
@@ -54,10 +56,10 @@ def multiple_car_tracker():
                     minSize=(30, 30),
                     flags=cv2.CASCADE_SCALE_IMAGE
                 )
-        
-            if not (frame_counter % 20):
                     
-                with open(r'Vehicle-Speed-Detector\train_solution_bounding_boxes (1).csv', 'a', newline='') as f_object:    # vehicle trained dataset that increases accuracy of the detection
+                with open(
+                    r'V-core\vehicle.csv' and r'V-core\cars.csv', 'a', newline=''
+                ) as f_object:    # 2 more dataset to increase detection accuracy from kagggle
                     writer_object = writer(f_object)
 
                     for (x, y, w, h) in cars:
