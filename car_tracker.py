@@ -3,6 +3,8 @@ import cv2
 import time
 from csv import writer
 
+import dlib
+
 
 dataset = cv2.CascadeClassifier(r'V-core\cars.xml')
 dataset_2 = cv2.CascadeClassifier(r'V-core\myhaar.xml')
@@ -79,8 +81,43 @@ def multiple_car_tracker():
                     writer_object.writerow([w, h, ew, eh])
 
                     print(data)
+                
+                for (_x, _y, _w, _h) in cars:
+                    x = int(_x)
+                    y = int(_y)
+                    w = int(_w)
+                    h = int(_h)
+                    
+                    x_bar = x + 0.5 * w
+                    y_bar = y + 0.5 * h
+                    
+                    match_car = [None]
+
+                    for car_track in car_tracker.keys():
+                        tracked_position = car_tracker[car_track].get_position()
+                        
+                        t_x = int(tracked_position.left())
+                        t_y = int(tracked_position.top())
+                        t_w = int(tracked_position.width())
+                        t_h = int(tracked_position.height())
+
+                        t_x_bar = t_x + 0.5 * t_w
+                        t_y_bar = t_y + 0.5 * t_h
+                        
+                        if (
+                            (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
+                            ):
+                            match_car = car_track
+
+                        if match_car is None:
+                            print(f'Creating new tracker {str(current_car)}')
+                            
+                            tracker = dlib.correlation_tracker()
+                            tracker.start_track(video, dlib.rectangle(x, y, x + w, y + h))
+                            
+                            car_tracker[current_car] = tracker
+                            car_side1[current_car] [x, y, w, h]
+                        
         else:
             [video] == [None]
             break
-            
-        
