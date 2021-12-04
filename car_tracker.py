@@ -6,7 +6,7 @@ import math
 import dlib
 
 
-dataset = cv2.CascadeClassifier(r'V-core\cars.xml')
+dataset_1 = cv2.CascadeClassifier(r'V-core\cars.xml')
 dataset_2 = cv2.CascadeClassifier(r'V-core\myhaar.xml')
 video_c = cv2.VideoCapture(r'V-core\cars.mp4')
 
@@ -65,7 +65,7 @@ def multiple_car_tracker():
     
         if not (frame_counter % 10):
             gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
-            cars = dataset.detectMultiScale(
+            cars = dataset_1.detectMultiScale(
                 gray_scale,
                 scaleFactor=1.3,
                 minNeighbors=4,
@@ -89,7 +89,7 @@ def multiple_car_tracker():
                         data = str(w)+','+str(h)+','+str(ew)+','+str(eh)
                         
                         writer_object = writer(f_object)
-                        writer_object.writerow([data or None])
+                        writer_object.writerow([data])
 
                         print(data)
         
@@ -167,7 +167,7 @@ def multiple_car_tracker():
                 [x1, y1, w1, h1] = car_side1[i]
                 [x2, y2, w2, h2] = car_side2[i]
                 
-                car_side1[1] = [x2, y2, w2, h2]
+                car_side1[i] = [x2, y2, w2, h2]
                 
                 if [x1, y1, w1, h1] != [x2, y2, w2, h2]:
                     if (

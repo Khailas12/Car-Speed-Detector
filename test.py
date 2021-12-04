@@ -47,7 +47,7 @@ def trackMultipleObjects():
         image = cv2.resize(image, (WIDTH, HEIGHT))
         resultImage = image.copy()
 
-        frameCounter = frameCounter + 1
+        frameCounter += 1
 
         carIDtoDelete = []
 
@@ -89,7 +89,7 @@ def trackMultipleObjects():
 
                         data = str(w)+','+str(h)+','+str(ew)+','+str(eh)
 
-                        writer(f_object).writerow([data or None])
+                        writer(f_object).writerow([data])
 
                         print(data)
 
