@@ -11,12 +11,12 @@ dataset_2 = cv2.CascadeClassifier(r'V-core\myhaar.xml')
 video_c = cv2.VideoCapture(r'V-core\cars.mp4')
 
 
-
 def vehicle_speed(side1, side2):
-    si1 = math.pow(side1[0] - side1[0], 2)
-    si2 = math.pow(side2[1] - side2[1], 2)
-    
-    pixels = math.sqrt(si1 + si2)
+    # pixels = math.sqrt(si1[0] + si2[1])
+    pixels = math.sqrt(
+        math.pow(
+        side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
+    )
     ppm = 8.8
     meters = pixels / ppm
     fps = 18
@@ -41,7 +41,7 @@ def multiple_car_tracker():
         start_time = time.time()
         rc, video = video_c.read()
         
-        if type(video) == type(None):
+        if type(video) == [None]:
             break
 
         video = cv2.resize(video, (height, width))     # video screen size adjusted and set to full screen
@@ -63,7 +63,7 @@ def multiple_car_tracker():
             car_side2.pop(car_track, None)
             
     
-        if not (frame_counter % 20):
+        if not (frame_counter % 10):
             gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
             cars = dataset.detectMultiScale(
                 gray_scale,
@@ -153,7 +153,7 @@ def multiple_car_tracker():
             
         end_time = time.time()
         if not (end_time == start_time):
-            fps = 1.0 /( end_time - start_time)
+            fps = 1.0 / (end_time - start_time)
                     
         cv2.putText(
             video_final, 'FPS: ' + str(int(fps)),
@@ -162,24 +162,29 @@ def multiple_car_tracker():
             thickness=2
         )
         
-        for i in car_side1.keys():
-            if frame_counter % 1 == 0:
+        for i in car_side2.keys():
+            if frame_counter % 1 is 0:
                 [x1, y1, w1, h1] = car_side1[i]
                 [x2, y2, w2, h2] = car_side2[i]
                 
                 car_side1[1] = [x2, y2, w2, h2]
                 
-                if [x1, y1, w1, h1] != [x2, y2, w2, h1]:
+                if [x1, y1, w1, h1] != [x2, y2, w2, h2]:
                     if (
                         speed[i] == None or speed[i] == 0
-                    ) and y1 >= 274 and y1 <= 285:
+                    ) and y1 >= 275 and y1 <= 285:
                         speed[i] = vehicle_speed(
                             [x1, y1, w1, h1], [x2, y2, w2, h2]
                         )
                 
                     if speed[i] != None and y1 >= 180:
-                        cv2.putText(video_final, str(int(speed[i])) + " km/hr", (int(x1 + w1/2), int(
-                        y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
+                        cv2.putText(
+                            video_final,
+                            str(int(speed[i])) + " km/hr",
+                            (int(x1 + w1/2), int(y1-5)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.75,
+                            (255, 255, 255), 2
+                        )
         
         cv2.imshow('result', video_final)
         

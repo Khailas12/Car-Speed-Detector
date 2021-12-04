@@ -41,7 +41,7 @@ def trackMultipleObjects():
     while True:
         start_time = time.time()
         rc, image = video.read()
-        if type(image) == type(None):
+        if type(image) == [None]:
             break
 
         image = cv2.resize(image, (WIDTH, HEIGHT))
@@ -158,7 +158,7 @@ def trackMultipleObjects():
                     thickness=2)
 
         for i in carLocation1.keys():
-            if frameCounter % 1 == 0:
+            if frameCounter % 1 is 0:
                 [x1, y1, w1, h1] = carLocation1[i]
                 [x2, y2, w2, h2] = carLocation2[i]
 
@@ -171,7 +171,6 @@ def trackMultipleObjects():
                         speed[i] = estimateSpeed(
                             [x1, y1, w1, h1], [x2, y2, w2, h2])
 
-                    # if y1 > 275 and y1 < 285:
                     if speed[i] != None and y1 >= 180:
                         cv2.putText(resultImage, str(int(speed[i])) + " km/hr", (int(x1 + w1/2), int(
                             y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
@@ -179,7 +178,7 @@ def trackMultipleObjects():
                     #print ('CarID ' + str(i) + ': speed is ' + str("%.2f" % round(speed[i], 0)) + ' km/h.\n')
 
                     # else:
-                    #	cv2.putText(resultImage, "Far Object", (int(x1 + w1/2), int(y1)),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+                    # 	cv2.putText(resultImage, "Far Object", (int(x1 + w1/2), int(y1)),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
                         #print ('CarID ' + str(i) + ' Location1: ' + str(carLocation1[i]) + ' Location2: ' + str(carLocation2[i]) + ' speed is ' + str("%.2f" % round(speed[i], 0)) + ' km/h.\n')
         cv2.imshow('result', resultImage)
