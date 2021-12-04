@@ -1,7 +1,6 @@
 import cv2
 import dlib
 import time
-import threading
 import math
 from csv import writer
 

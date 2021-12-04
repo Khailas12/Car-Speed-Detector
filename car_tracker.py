@@ -27,7 +27,6 @@ def vehicle_speed(side1, side2):
 
 def multiple_car_tracker():
     frame_counter = 0
-    
 
     current_car = 1     # car count starts from 1
     car_tracker = {}
@@ -104,33 +103,35 @@ def multiple_car_tracker():
                 x_bar = x + 0.5 * w
                 y_bar = y + 0.5 * h
                 
-                match_car = [None]
+                match_car = None
 
-                for car_track in car_tracker.keys():
-                    tracked_position = car_tracker[car_track].get_position()
+            for car_track in car_tracker.keys():
+                tracked_position = car_tracker[car_track].get_position()
+                
+                t_x = int(tracked_position.left())
+                t_y = int(tracked_position.top())
+                t_w = int(tracked_position.width())
+                t_h = int(tracked_position.height())
+
+                t_x_bar = t_x + 0.5 * t_w
+                t_y_bar = t_y + 0.5 * t_h
+                
+                if (
+                    (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
+                    ):
+                    match_car = car_track
+
+                if match_car is None:
+                    print(f'Creating new tracker {str(current_car)}')
                     
-                    t_x = int(tracked_position.left())
-                    t_y = int(tracked_position.top())
-                    t_w = int(tracked_position.width())
-                    t_h = int(tracked_position.height())
-
-                    t_x_bar = t_x + 0.5 * t_w
-                    t_y_bar = t_y + 0.5 * t_h
+                    tracker = dlib.correlation_tracker()
+                    tracker.start_track(
+                        video, dlib.rectangle(x, y, x + w, y + h)
+                    )
                     
-                    if (
-                        (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
-                        ):
-                        match_car = car_track
-
-                    if match_car is None:
-                        print(f'Creating new tracker {str(current_car)}')
-                        
-                        tracker = dlib.correlation_tracker()
-                        tracker.start_track(video, dlib.rectangle(x, y, x + w, y + h))
-                        
-                        car_tracker[current_car] = tracker
-                        car_side1[current_car] [x, y, w, h]
-                        current_car += 1
+                    car_tracker[current_car] = tracker
+                    car_side1[current_car] [x, y, w, h] # both the axis, width and height
+                    current_car += 1    
 
 
         rectangle_color = (0, 255, 0)
