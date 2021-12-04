@@ -9,6 +9,7 @@ import dlib
 dataset_1 = cv2.CascadeClassifier(r'V-core\cars.xml')
 dataset_2 = cv2.CascadeClassifier(r'V-core\myhaar.xml')
 video_c = cv2.VideoCapture(r'V-core\cars.mp4')
+# video_c = cv2.VideoCapture(r'V-core\carsVid.mp4')
 
 
 def vehicle_speed(side1, side2):
@@ -109,8 +110,6 @@ def multiple_car_tracker():
                         
                         writer_object = writer(f_object)
                         writer_object.writerow([data])
-
-                        print(data)
             
                 for (_x, _y, _w, _h) in cars:
                     x = int(_x)
@@ -150,7 +149,6 @@ def multiple_car_tracker():
                         car_tracker[current_car] = tracker
                         car_side1[current_car] = [x, y, w, h] # both the axis, width and height
                         current_car += 1    
-        
 
         for i in car_side2.keys():
             if frame_counter % 1 == 0:
@@ -175,7 +173,7 @@ def multiple_car_tracker():
                             cv2.FONT_HERSHEY_SIMPLEX, 0.75,
                             (255, 255, 255), 2
                         )
-
+                
             end_time = time.time()
             if not (end_time == start_time):
                 fps = 1.0 / (end_time - start_time)
