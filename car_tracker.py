@@ -13,46 +13,45 @@ video_c = cv2.VideoCapture(r'V-core\cars.mp4')
 
 
 def vehicle_speed(side1, side2):
-    si1 = math.pow(side1[0] - side1[0])
-    si2 = math.pow(side2[1] - side2[1])
+    si1 = math.pow(side1[0] - side1[0], 2)
+    si2 = math.pow(side2[1] - side2[1], 2)
     
     pixels = math.sqrt(si1 + si2)
     ppm = 8.8
     meters = pixels / ppm
-    fps = 13
+    fps = 18
     speed = meters * fps * 3.6
     return speed
 
 
-
 def multiple_car_tracker():
     frame_counter = 0
-
     current_car = 1     # car count starts from 1
     car_tracker = {}
     
     car_side1 = {}
     car_side2 = {}
     speed = [None] * 1000
+    fps = 0
     
     height = 1280
     width = 720
     
     while True:     
         start_time = time.time()
-        src, video = video_c.read()
+        rc, video = video_c.read()
         
-        if type(video)  == type(None):
+        if type(video) == type(None):
             break
 
         video = cv2.resize(video, (height, width))     # video screen size adjusted and set to full screen
         video_final = video.copy()
-        frame_counter += 1      # incrementing frame repeatedly  
+        frame_counter += 1      # incrementing frames repeatedly  
         
         delete_car = []
         
         for car_track in car_tracker.keys():
-            quality_tracker = car_tracker[car_track].update(video_final)
+            quality_tracker = car_tracker[car_track].update(video)
             
             if quality_tracker < 7:
                 delete_car.append(car_track)
@@ -105,21 +104,21 @@ def multiple_car_tracker():
                 
                 match_car = None
 
-            for car_track in car_tracker.keys():
-                tracked_position = car_tracker[car_track].get_position()
-                
-                t_x = int(tracked_position.left())
-                t_y = int(tracked_position.top())
-                t_w = int(tracked_position.width())
-                t_h = int(tracked_position.height())
+                for car_track in car_tracker.keys():
+                    tracked_position = car_tracker[car_track].get_position()
+                    
+                    t_x = int(tracked_position.left())
+                    t_y = int(tracked_position.top())
+                    t_w = int(tracked_position.width())
+                    t_h = int(tracked_position.height())
 
-                t_x_bar = t_x + 0.5 * t_w
-                t_y_bar = t_y + 0.5 * t_h
-                
-                if (
-                    (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
-                    ):
-                    match_car = car_track
+                    t_x_bar = t_x + 0.5 * t_w
+                    t_y_bar = t_y + 0.5 * t_h
+                    
+                    if (
+                        (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
+                        ):
+                        match_car = car_track
 
                 if match_car is None:
                     print(f'Creating new tracker {str(current_car)}')
@@ -130,7 +129,7 @@ def multiple_car_tracker():
                     )
                     
                     car_tracker[current_car] = tracker
-                    car_side1[current_car] [x, y, w, h] # both the axis, width and height
+                    car_side1[current_car] = [x, y, w, h] # both the axis, width and height
                     current_car += 1    
 
 
@@ -153,10 +152,8 @@ def multiple_car_tracker():
             car_side2[car_track] = [t_x, t_y, t_w, t_h]
             
         end_time = time.time()
-        
         if not (end_time == start_time):
             fps = 1.0 /( end_time - start_time)
-    
                     
         cv2.putText(
             video_final, 'FPS: ' + str(int(fps)),
@@ -184,7 +181,7 @@ def multiple_car_tracker():
                         cv2.putText(video_final, str(int(speed[i])) + " km/hr", (int(x1 + w1/2), int(
                         y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
         
-        cv2.imshow('result', video)
+        cv2.imshow('result', video_final)
         
         if cv2.waitKey(33) == ord('q'):
             break

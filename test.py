@@ -76,7 +76,7 @@ def trackMultipleObjects():
             with open(
                 r'Vehicle-Speed-Detector\cars.csv' and r'Vehicle-Speed-Detector\vehicle.csv', 'a', newline=''
             ) as f_object:
-					
+
                 for (x, y, w, h) in cars:
                     cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
                     roi_gray = gray[y:y+h, x:x+w]
@@ -84,14 +84,15 @@ def trackMultipleObjects():
                     cars2 = carCascade2.detectMultiScale(roi_gray)
 
                     for (ex, ey, ew, eh) in cars2:
-                        cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
+                        cv2.rectangle(roi_color, (ex, ey),
+                                      (ex+ew, ey+eh), (0, 255, 0), 2)
 
                         data = str(w)+','+str(h)+','+str(ew)+','+str(eh)
-                        
+
                         writer(f_object).writerow([data or None])
 
                         print(data)
-        
+
             for (_x, _y, _w, _h) in cars:
                 x = int(_x)
                 y = int(_y)
@@ -147,11 +148,14 @@ def trackMultipleObjects():
             carLocation2[carID] = [t_x, t_y, t_w, t_h]
 
         end_time = time.time()
-		
+
         if not (end_time == start_time):
             fps = 1.0/(end_time - start_time)
 
-        cv2.putText(resultImage, 'FPS: ' + str(int(fps)),(900, 480), cv2.FONT_HERSHEY_DUPLEX, fontScale=0.75, color=(0, 0, 255), thickness=2)
+        cv2.putText(resultImage, 'FPS: ' + str(int(fps)),
+                    (900, 480), cv2.FONT_HERSHEY_DUPLEX,
+                    fontScale=0.75, color=(0, 0, 255),
+                    thickness=2)
 
         for i in carLocation1.keys():
             if frameCounter % 1 == 0:
