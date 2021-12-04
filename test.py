@@ -3,6 +3,7 @@ import dlib
 import time
 import threading
 import math
+from csv import writer
 
 
 carCascade = cv2.CascadeClassifier(r'Vehicle-Speed-Detector\myhaar.xml')
@@ -31,7 +32,6 @@ def trackMultipleObjects():
     fps = 0
 
     carTracker = {}
-    carNumbers = {}
     carLocation1 = {}
     carLocation2 = {}
     speed = [None] * 1000
@@ -77,17 +77,22 @@ def trackMultipleObjects():
             with open(
                 r'Vehicle-Speed-Detector\cars.csv' and r'Vehicle-Speed-Detector\vehicle.csv', 'a', newline=''
             ) as f_object:
-
+					
                 for (x, y, w, h) in cars:
                     cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
                     roi_gray = gray[y:y+h, x:x+w]
                     roi_color = image[y:y+h, x:x+w]
-                    eyes = carCascade2.detectMultiScale(roi_gray)
+                    cars2 = carCascade2.detectMultiScale(roi_gray)
 
-                    for (ex, ey, ew, eh) in eyes:
-                        cv2.rectangle(roi_color, (ex, ey),
-                                      (ex+ew, ey+eh), (0, 255, 0), 2)
+                    for (ex, ey, ew, eh) in cars2:
+                        cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
 
+                        data = str(w)+','+str(h)+','+str(ew)+','+str(eh)
+                        
+                        writer(f_object).writerow([data or None])
+
+                        print(data)
+        
             for (_x, _y, _w, _h) in cars:
                 x = int(_x)
                 y = int(_y)

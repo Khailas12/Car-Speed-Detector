@@ -43,96 +43,68 @@ def multiple_car_tracker():
         start_time = time.time()
         src, video = video_c.read()
         
-        if video == cv2.resize(video, (height, width)):     # video screen size adjusted and set to full screen
-            video_final = video.copy()
-            frame_counter += 1      # incrementing frame repeatedly  
-            
-            delete_car = {}
-            
-            for car_track in car_tracker.keys():
-                quality_tracker = car_tracker[car_track].update(video_final)
-                
-                if quality_tracker < 7:
-                    delete_car.append(car_track)
+        if type(video)  == type(None):
+            break
 
-            for car_track in delete_car:
-                print(f'Removed Car ID {car_track} from List trackers')
-                car_tracker.pop(car_track, None)
-                car_side1.pop(car_track, None)
-                car_side2.pop(car_track, None)
-                
+        video = cv2.resize(video, (height, width))     # video screen size adjusted and set to full screen
+        video_final = video.copy()
+        frame_counter += 1      # incrementing frame repeatedly  
         
-            if not (frame_counter % 20):
-                gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
-                cars = dataset.detectMultiScale(
-                    gray_scale,
-                    scaleFactor=1.3,
-                    minNeighbors=4,
-                    minSize=(30, 30),
-                    flags=cv2.CASCADE_SCALE_IMAGE
-                )
-                    
-                with open(
-                    r'V-core\vehicle.csv' and r'V-core\cars.csv', 'a', newline=''
-                ) as f_object:    # 2 more dataset to increase detection accuracy from kagggle
-                    writer_object = writer(f_object)
+        delete_car = []
+        
+        for car_track in car_tracker.keys():
+            quality_tracker = car_tracker[car_track].update(video_final)
+            
+            if quality_tracker < 7:
+                delete_car.append(car_track)
 
-                    for (x, y, w, h) in cars:
-                        cv2.rectangle(video, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                        roi_gray = gray_scale[y:y+h, x:x+w]
-                        roi_color = video[y:y+h, x:x+w]
-                        roi_color = video[y:y + h, x:x + w]
+        for car_track in delete_car:
+            print(f'Removed Car ID {car_track} from List trackers')
+            car_tracker.pop(car_track, None)
+            car_side1.pop(car_track, None)
+            car_side2.pop(car_track, None)
+            
+    
+        if not (frame_counter % 20):
+            gray_scale = cv2.cvtColor(video, cv2.COLOR_BGR2GRAY)
+            cars = dataset.detectMultiScale(
+                gray_scale,
+                scaleFactor=1.3,
+                minNeighbors=4,
+                minSize=(30, 30),
+                flags=cv2.CASCADE_SCALE_IMAGE
+            )
+                
+            with open(
+                r'V-core\vehicle.csv' and r'V-core\cars.csv', 'a', newline=''
+            ) as f_object:    # 2 more dataset to increase detection accuracy from kagggle
 
+                for (x, y, w, h) in cars:
+                    cv2.rectangle(video, (x, y), (x+w, y+h), (255, 0, 0), 2)
+                    roi_gray = gray_scale[y:y+h, x:x+w]
+                    roi_color = video[y:y+h, x:x+w]
                     cars2 = dataset_2.detectMultiScale(roi_gray)
-                    # Draw a rectangle around the eyes
+
                     for (ex, ey, ew, eh) in cars2:
                         cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
-                        cv2.putText(video, '', (x + ex, y + ey), 1, 1, (0, 255, 0), 1)
 
-                    data = str(w)+','+str(h)+','+str(ew)+','+str(eh)
+                        data = str(w)+','+str(h)+','+str(ew)+','+str(eh)
+                        
+                        writer_object = writer(f_object)
+                        writer_object.writerow([data or None])
 
-                    writer_object.writerow([w, h, ew, eh])
-
-                    print(data)
+                        print(data)
+        
+            for (_x, _y, _w, _h) in cars:
+                x = int(_x)
+                y = int(_y)
+                w = int(_w)
+                h = int(_h)
                 
-                for (_x, _y, _w, _h) in cars:
-                    x = int(_x)
-                    y = int(_y)
-                    w = int(_w)
-                    h = int(_h)
-                    
-                    x_bar = x + 0.5 * w
-                    y_bar = y + 0.5 * h
-                    
-                    match_car = [None]
-
-                    for car_track in car_tracker.keys():
-                        tracked_position = car_tracker[car_track].get_position()
-                        
-                        t_x = int(tracked_position.left())
-                        t_y = int(tracked_position.top())
-                        t_w = int(tracked_position.width())
-                        t_h = int(tracked_position.height())
-
-                        t_x_bar = t_x + 0.5 * t_w
-                        t_y_bar = t_y + 0.5 * t_h
-                        
-                        if (
-                            (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
-                            ):
-                            match_car = car_track
-
-                        if match_car is None:
-                            print(f'Creating new tracker {str(current_car)}')
-                            
-                            tracker = dlib.correlation_tracker()
-                            tracker.start_track(video, dlib.rectangle(x, y, x + w, y + h))
-                            
-                            car_tracker[current_car] = tracker
-                            car_side1[current_car] [x, y, w, h]
-                            current_car += 1
-
-                rectangle_color = (0, 255, 0)
+                x_bar = x + 0.5 * w
+                y_bar = y + 0.5 * h
+                
+                match_car = [None]
 
                 for car_track in car_tracker.keys():
                     tracked_position = car_tracker[car_track].get_position()
@@ -141,54 +113,75 @@ def multiple_car_tracker():
                     t_y = int(tracked_position.top())
                     t_w = int(tracked_position.width())
                     t_h = int(tracked_position.height())
+
+                    t_x_bar = t_x + 0.5 * t_w
+                    t_y_bar = t_y + 0.5 * t_h
                     
-                    cv2.rectangle(
-                        video_final,
-                        (t_x, t_y),
-                        (t_x + t_w, t_y + t_h),
-                        rectangle_color, 4
-                    )   # spots the vehicle and the color assigned is green 
-                    
-                    car_side2[car_track] = [t_x, t_y, t_w, t_h]
-                end_time = time.time()
-                
-                if not (end_time == start_time):
-                    fps = 1.0 /( end_time - start_time)
-                
-                cv2.putText(
-                    video, 
-                    'FPS: ' + str(int(fps)), 
-                    
-                )
-                		
-            cv2.putText(
-                video_final, 'FPS: ' + str(int(fps)),
-                (900, 480), cv2.FONT_HERSHEY_DUPLEX, 
-                fontScale=0.75, color=(0, 0, 255),
-                thickness=2
-            )
+                    if (
+                        (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
+                        ):
+                        match_car = car_track
+
+                    if match_car is None:
+                        print(f'Creating new tracker {str(current_car)}')
+                        
+                        tracker = dlib.correlation_tracker()
+                        tracker.start_track(video, dlib.rectangle(x, y, x + w, y + h))
+                        
+                        car_tracker[current_car] = tracker
+                        car_side1[current_car] [x, y, w, h]
+                        current_car += 1
+
+
+        rectangle_color = (0, 255, 0)
+        for car_track in car_tracker.keys():
+            tracked_position = car_tracker[car_track].get_position()
             
-            for i in car_side1.keys():
-                if frame_counter % 1 == 0:
-                    [x1, y1, w1, h1] = car_side1[i]
-                    [x2, y2, w2, h2] = car_side2[i]
+            t_x = int(tracked_position.left())
+            t_y = int(tracked_position.top())
+            t_w = int(tracked_position.width())
+            t_h = int(tracked_position.height())
+            
+            cv2.rectangle(
+                video_final,
+                (t_x, t_y),
+                (t_x + t_w, t_y + t_h),
+                rectangle_color, 4
+            )   # spots the vehicle and the color assigned is green 
+            
+            car_side2[car_track] = [t_x, t_y, t_w, t_h]
+            
+        end_time = time.time()
+        
+        if not (end_time == start_time):
+            fps = 1.0 /( end_time - start_time)
+    
                     
-                    car_side1[1] = [x2, y2, w2, h2]
-                    
-                    if [x1, y1, w1, h1] != [x2, y2, w2, h1]:
-                        if (
-                            speed[i] == None or speed[i] == 0
-                        ) and y1 >= 274 and y1 <= 285:
-                            speed[i] = vehicle_speed(
-                                [x1, y1, w1, h1], [x2, y2, w2, h2]
-                            )
-                    
-                        if speed[i] != None and y1 >= 180:
-                            cv2.putText(video_final, str(int(speed[i])) + " km/hr", (int(x1 + w1/2), int(
-                            y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
-                     
-            [video] == [None]
-            break
+        cv2.putText(
+            video_final, 'FPS: ' + str(int(fps)),
+            (900, 480), cv2.FONT_HERSHEY_DUPLEX, 
+            fontScale=0.75, color=(0, 0, 255),
+            thickness=2
+        )
+        
+        for i in car_side1.keys():
+            if frame_counter % 1 == 0:
+                [x1, y1, w1, h1] = car_side1[i]
+                [x2, y2, w2, h2] = car_side2[i]
+                
+                car_side1[1] = [x2, y2, w2, h2]
+                
+                if [x1, y1, w1, h1] != [x2, y2, w2, h1]:
+                    if (
+                        speed[i] == None or speed[i] == 0
+                    ) and y1 >= 274 and y1 <= 285:
+                        speed[i] = vehicle_speed(
+                            [x1, y1, w1, h1], [x2, y2, w2, h2]
+                        )
+                
+                    if speed[i] != None and y1 >= 180:
+                        cv2.putText(video_final, str(int(speed[i])) + " km/hr", (int(x1 + w1/2), int(
+                        y1-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
         
         cv2.imshow('result', video)
         
