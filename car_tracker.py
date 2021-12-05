@@ -18,7 +18,7 @@ def vehicle_speed(side1, side2):
         math.pow(
         side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
     )
-    ppm = 8.8
+    ppm = 16.8  # Netpbm color image format -> lowest common denominator color image file format.
     meters = pixels / ppm
     fps = 18
     speed = meters * fps * 3.6
