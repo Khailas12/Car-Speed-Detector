@@ -93,7 +93,7 @@ def multiple_car_tracker():
             )
 
             with open(
-                r'V-core\vehicle.csv' and r'V-core\cars.csv', 'a', newline=''
+                r'V-core\vehicle.csv' and r'V-core\cars-2.csv', 'a', newline=''
             ) as f_object:    # 2 more dataset to increase detection accuracy from kagggle
 
                 for (x, y, w, h) in cars:
