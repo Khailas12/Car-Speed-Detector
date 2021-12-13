@@ -2,3 +2,9 @@
 demo.py
 flowchart.png
 /d_model
+d_model/coco.names
+d_model/coco.names
+d_model/yolo_d.py
+d_model/yolov3-tiny.weights
+d_model/yolov4-csp-swish.weights
+d_model/yolov4-csp-x-swish.cfg
