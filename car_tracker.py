@@ -15,8 +15,8 @@ video_c = cv2.VideoCapture(r'V-core\videos\cars3.mkv')
 def vehicle_speed(side1, side2):
     # pixels = math.sqrt(si1[0] + si2[1])
     pixels = math.sqrt(
-        math.pow(
-            side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
+        math.pow(side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
+    
     )
     # Netpbm color image format -> lowest common denominator color image file format.
     ppm = 16.8
@@ -135,8 +135,7 @@ def multiple_car_tracker():
                         t_y_bar = t_y + 0.5 * t_h
 
                         if (
-                            (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)
-                                                               ) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
+                            (t_x <= x_bar <= (t_x + t_w)) and (t_y <= y_bar <= (t_y + t_h)) and (x <= t_x_bar <= (x + w)) and (y <= t_y_bar <= (y + h))
                         ):
                             match_car = car_track
 
