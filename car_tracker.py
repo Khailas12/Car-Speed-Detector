@@ -16,7 +16,6 @@ def vehicle_speed(side1, side2):
     # pixels = math.sqrt(si1[0] + si2[1])
     pixels = math.sqrt(
         math.pow(side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
-    
     )
     # Netpbm color image format -> lowest common denominator color image file format.
     ppm = 16.8
