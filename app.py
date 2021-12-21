@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, flash, url_for
+from flask import Flask, render_template, request, Response, flash
 from werkzeug.utils import redirect, secure_filename
 import os
 import time
@@ -48,7 +48,7 @@ def upload_file():
             input = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('File uploaded Succesfully')
-            return render_template('index.html')
+            return render_template(r'V-core\templates\upload.html')
         
         else:
             flash('mkv', 'mp4')
@@ -76,7 +76,7 @@ def gen():
         speed = meters * fps * 3.6
         return speed
 
-        
+
     def multiple_car_tracker():
         frame_counter = 0
         current_car = 1     # car count starts from 1
@@ -243,14 +243,12 @@ def gen():
             if cv2.waitKey(33) == ord('q'):
                 break
 
-        cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
 
 
 @app.route('/video_feed')
 def video_feed():
-	return Response(gen(),
-					mimetype='multipart/x-mixed-replace; boundary=frame')
+	return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
