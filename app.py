@@ -1,9 +1,3 @@
-import time
-import cv2
-import time
-from csv import writer
-import math
-import dlib
 from flask import Flask, render_template, request, Response, flash, url_for
 from werkzeug.utils import redirect, secure_filename
 import os
@@ -15,11 +9,11 @@ import math
 import dlib
 
 
-UPLOAD = 'upload'
+UPLOAD_FOLDER = 'upload'
 
 app = Flask(__name__)
 app.secret_key = 'secret key'
-app.config['UPLOAD'] = UPLOAD
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 input = ''
 
 
@@ -34,7 +28,7 @@ def upload_form():
     return render_template('upload.html')
 
 
-@app.route('/', method=['POST'])
+@app.route('/', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
     
@@ -52,7 +46,7 @@ def upload_file():
             
             global input
             input = filename
-            file.save(os.path.join(app.config['UPLOAD'], filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('File uploaded Succesfully')
             return render_template('index.html')
         
@@ -64,7 +58,7 @@ def upload_file():
 def index():
     return render_template('index.html')
 
-@app.route('/', method=['POST'])
+@app.route('/', methods=['POST'])
 def gen():
     dataset_1 = cv2.CascadeClassifier(r'V-core\dataset\cars.xml')
     dataset_2 = cv2.CascadeClassifier(r'V-core\dataset\myhaar.xml')
@@ -254,10 +248,9 @@ def gen():
 
 @app.route('/video_feed')
 def video_feed():
-	"""Video streaming route. Put this in the src attribute of an frame tag."""
 	return Response(gen(),
 					mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
     
