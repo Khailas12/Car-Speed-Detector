@@ -46,7 +46,7 @@ def upload_file():
             
             global input
             input = filename
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(app.config[r'V-core\UPLOAD_FOLDER'], input))
             flash('File uploaded Succesfully')
             return render_template(r'V-core\templates\upload.html')
         
