@@ -1,4 +1,3 @@
-from cv2 import EVENT_LBUTTONDOWN
 from flask import Flask, render_template, request, Response, flash
 from werkzeug.utils import redirect, secure_filename
 import os
@@ -282,7 +281,7 @@ def gen():
     print('Done.')
 
 
-@app.route('/video_feed')
+@app.route('/video_feed', methods=['GET'])
 def video_feed():
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
