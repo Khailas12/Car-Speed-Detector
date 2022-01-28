@@ -40,6 +40,7 @@ def upload_file():
         if "file" not in request.files:
             flash("No file part")
             return redirect(request.url)
+        
         file = request.files["file"]
 
         if file.filename == "":
@@ -53,11 +54,9 @@ def upload_file():
             input = filename
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             
-            # global input
-            # input = filename
             # basepath = os.path.dirname(__file__)
-            # file_path = os.path.join(
-            # basepath, 'video_feed', secure_filename(file.filename))
+            # file.save(os.path.join(
+            # basepath, 'video_feed', secure_filename(file.filename)))
 
             flash("File successfully uploaded")
             return render_template("upload.html", fname=filename)
@@ -81,22 +80,6 @@ def vehicle_speed(side1, side2):
 
 
 def gen():
-    ref_rects = []
-
-    def click_and_crop(event, x, y, flags, param):
-        ref_points = []
-
-        if event == cv2.EVENT_LBUTTONDOWN:
-            ref_points = [(x, y)]
-
-        elif event == cv2.EVENT_LBUTTONDOWN:
-            (x1, y1), x2, y2 = ref_points[0], x, y
-
-            ref_points[0] = (min(x1, x2), min(y1, y2))
-
-            ref_points.append((max(x1, x2), max(y1, y2)))
-
-            ref_rects.append((ref_points[0], ref_points[1]))
 
     dataset_1 = cv2.CascadeClassifier(r"V-core\dataset\cars.xml")
     dataset_2 = cv2.CascadeClassifier(r"V-core\dataset\myhaar.xml")
