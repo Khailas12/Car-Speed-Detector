@@ -1,10 +1,18 @@
 <html>
-  <head>
-    <title>Streaming </title>
-  </head>
-  <body>
-<h1>COMPUTER VISION</h1>
 
-    <img src="{{ url_for('video_feed') }}">
-  </body>
+<head>
+  <title>Streaming </title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8  offset-lg-2">
+        <h3 class="mt-5">Vehicle Speed</h3>
+        <img src="{{ url_for('video_feed') }}" width="100%">
+      </div>
+    </div>
+  </div>
+</body>
+
 </html>

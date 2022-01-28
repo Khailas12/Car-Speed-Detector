@@ -11,6 +11,7 @@ import os
 
 
 app = Flask(__name__)
+
 app.secret_key = "secret key"
 UPLOAD_FOLDER = r"V-core\static\uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -32,7 +33,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["POST"])
 def upload_file():
     if request.method == "POST":
         # check if the post request has the file part
@@ -53,7 +54,7 @@ def upload_file():
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
             flash("File successfully uploaded")
-            return render_template("index.html")
+            return render_template("upload.html")
 
         else:
             flash("Allowed image types are -> mkv, mp4, avi")
@@ -73,7 +74,7 @@ def vehicle_speed(side1, side2):
     return speed
 
 
-def gen():
+def gen_frames():
     ref_rects = []
 
     def nothing(x):
@@ -269,11 +270,13 @@ def gen():
         )
 
         cv2.imshow('Car Speed', video_final)
-        video_final = cv2.imencode('.jpg', video_final)[1].tobytes()
+        
+        ret, video_final = cv2.imencode('.jpg', video_final)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + video_final + b'\r\n')
 
         if cv2.waitKey(33) == ord('q'):
             break   # loop break
+
 
     print('Closing video capture...')
     video_c.release()
@@ -281,9 +284,9 @@ def gen():
     print('Done.')
 
 
-@app.route('/video_feed', methods=['GET'])
+@app.route('/video_feed')
 def video_feed():
-    return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 if __name__ == "__main__":
