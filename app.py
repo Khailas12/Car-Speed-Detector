@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, Response, flash
-from werkzeug.utils import redirect, secure_filename
+from flask import Flask, render_template, request, Response, flash, send_from_directory, redirect
+from werkzeug.utils import secure_filename
 import os
 import time
 import cv2
@@ -15,16 +15,16 @@ app = Flask(__name__)
 app.secret_key = "secret key"
 UPLOAD_FOLDER = r"V-core\static\uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
 input = ""
-ALLOWED_VIDEO_EXTENSIONS = set(["mkv", "mp4", "avi"])
+ALLOWED_VIDEO_EXTENSIONS = {"mkv", "mp4", "avi"}
 
 
 def file_allowed(filename):
     return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_VIDEO_EXTENSIONS
+        '.' in filename and filename.rsplit(
+            '.', 1)[1].lower() in ALLOWED_VIDEO_EXTENSIONS
     )
 
 
@@ -33,7 +33,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=['GET', 'POST'])
 def upload_file():
     if request.method == "POST":
         # check if the post request has the file part
@@ -59,6 +59,15 @@ def upload_file():
         else:
             flash("Allowed image types are -> mkv, mp4, avi")
             return redirect(request.url)
+
+
+@app.route('/uploads/<name>')
+def download_file(name):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
+
+app.add_url_rule(
+    "/uploads/<name>", endpoint="download_file", build_only=True
+)
 
 
 def vehicle_speed(side1, side2):
@@ -98,6 +107,7 @@ def gen_frames():
     dataset_1 = cv2.CascadeClassifier(r"V-core\dataset\cars.xml")
     dataset_2 = cv2.CascadeClassifier(r"V-core\dataset\myhaar.xml")
 
+
     video_c = cv2.VideoCapture(input)
     video_c.set(cv2.CAP_PROP_BUFFERSIZE, 2)
     # cv2.namedWindow("Source Image")
@@ -117,7 +127,7 @@ def gen_frames():
 
     while True:
         start_time = time.time()
-        rc, video = video_c.read()
+        ret, video = video_c.read()
 
         if type(video) == type(None):
             break
@@ -270,18 +280,16 @@ def gen_frames():
         )
 
         cv2.imshow('Car Speed', video_final)
-        
+
         ret, video_final = cv2.imencode('.jpg', video_final)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + video_final + b'\r\n')
 
         if cv2.waitKey(33) == ord('q'):
             break   # loop break
 
-
-    print('Closing video capture...')
+    print('\nClosing video')
     video_c.release()
     cv2.destroyAllWindows()
-    print('Done.')
 
 
 @app.route('/video_feed')
@@ -291,3 +299,5 @@ def video_feed():
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
+
+print('Done')
