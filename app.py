@@ -13,7 +13,7 @@ import os
 app = Flask(__name__)
 
 app.secret_key = "secret key"
-UPLOAD_FOLDER = r"V-core\static\uploads"
+UPLOAD_FOLDER = r"V-core\static\upload"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
@@ -52,9 +52,15 @@ def upload_file():
             global input
             input = filename
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            
+            # global input
+            # input = filename
+            # basepath = os.path.dirname(__file__)
+            # file_path = os.path.join(
+            # basepath, 'video_feed', secure_filename(file.filename))
 
             flash("File successfully uploaded")
-            return render_template("upload.html")
+            return render_template("upload.html", fname=filename)
 
         else:
             flash("Allowed image types are -> mkv, mp4, avi")
@@ -77,9 +83,6 @@ def vehicle_speed(side1, side2):
 def gen():
     ref_rects = []
 
-    def nothing(x):
-        pass
-
     def click_and_crop(event, x, y, flags, param):
         ref_points = []
 
@@ -100,8 +103,6 @@ def gen():
 
     video_c = cv2.VideoCapture(input)
     video_c.set(cv2.CAP_PROP_BUFFERSIZE, 2)
-    # cv2.namedWindow("Source Image")
-    # cv2.setMouseCallback("Source Image", click_and_crop)
 
     frame_counter = 0
     current_car = 1  # car count starts from 1
@@ -120,8 +121,8 @@ def gen():
         ret, video = video_c.read()
 
         if ret == True:
-            
-        # video screen size adjusted and set to full screen
+
+            # video screen size adjusted and set to full screen
             video = cv2.resize(video, (height, width))
             video_final = video.copy()
             frame_counter += 1  # incrementing frames repeatedly
@@ -144,7 +145,7 @@ def gen():
 
                 cv2.rectangle(
                     video_final, (t_x, t_y), (t_x + t_w, t_y +
-                                            t_h), rectangle_color, 4
+                                              t_h), rectangle_color, 4
                 )  # spots the vehicle and the color assigned is green
 
                 car_side2[car_track] = [t_x, t_y, t_w, t_h]
@@ -171,7 +172,7 @@ def gen():
 
                     for (x, y, w, h) in cars:
                         cv2.rectangle(video, (x, y), (x + w, y + h),
-                                    (255, 0, 0), 2)
+                                      (255, 0, 0), 2)
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
                         cars2 = dataset_2.detectMultiScale(roi_gray)
@@ -179,7 +180,7 @@ def gen():
                         for (ex, ey, ew, eh) in cars2:
                             cv2.rectangle(
                                 roi_color, (ex, ey), (ex + ew,
-                                                    ey + eh), (0, 255, 0), 2
+                                                      ey + eh), (0, 255, 0), 2
                             )
 
                             data = str(w) + "," + str(h) + "," + \
@@ -267,7 +268,7 @@ def gen():
                 color=(0, 0, 255),
                 thickness=2,
             )
-            
+
             # cv2.imshow('Car Speed', video_final)
 
             frame = cv2.imencode('.jpg', video_final)[1].tobytes()
