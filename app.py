@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, flash, send_from_directory, redirect
+from flask import Flask, render_template, request, Response, flash, redirect
 from werkzeug.utils import secure_filename
 import os
 import time
