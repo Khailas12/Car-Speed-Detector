@@ -7,7 +7,6 @@ import time
 from csv import writer
 import math
 import dlib
-import os
 
 
 app = Flask(__name__)
@@ -40,7 +39,7 @@ def upload_file():
         if "file" not in request.files:
             flash("No file part")
             return redirect(request.url)
-        
+
         file = request.files["file"]
 
         if file.filename == "":
@@ -53,7 +52,7 @@ def upload_file():
             global input
             input = filename
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-            
+
             # basepath = os.path.dirname(__file__)
             # file.save(os.path.join(
             # basepath, 'video_feed', secure_filename(file.filename)))
