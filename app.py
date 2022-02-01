@@ -130,7 +130,7 @@ def gen():
 
                 cv2.rectangle(
                     video_final, (t_x, t_y), (t_x + t_w, t_y +
-                                              t_h), rectangle_color, 4
+                                              t_h), rectangle_color, 2
                 )  # spots the vehicle and the color assigned is green
 
                 car_side2[car_track] = [t_x, t_y, t_w, t_h]
@@ -156,16 +156,18 @@ def gen():
                 ) as f_object:  # 2 more dataset to increase detection accuracy from kagggle
 
                     for (x, y, w, h) in cars:
-                        cv2.rectangle(video, (x, y), (x + w, y + h),
-                                      (255, 0, 0), 2)
+                        cv2.rectangle(video,
+                            (x, y), (x + w, y + h),
+                            (255, 0, 0), 2
+                            )
+                        
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
                         cars2 = dataset_2.detectMultiScale(roi_gray)
 
                         for (ex, ey, ew, eh) in cars2:
                             cv2.rectangle(
-                                roi_color, (ex, ey), (ex + ew,
-                                                      ey + eh), (0, 255, 0), 2
+                                roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2
                             )
 
                             data = str(w) + "," + str(h) + "," + \
@@ -230,14 +232,12 @@ def gen():
                                 [x1, y1, w1, h1], [x2, y2, w2, h2])
 
                         if speed[i] != None and y1 >= 180:
+
                             cv2.putText(
-                                video_final,
-                                str(int(speed[i])) + " km/hr",
+                                video_final, str(int(speed[i])) + " km/hr",
                                 (int(x1 + w1 / 2), int(y1 - 5)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.75,
-                                (255, 255, 255),
-                                2,
+                                cv2.FONT_HERSHEY_DUPLEX, fontScale=0.75,
+                                color=(0, 0, 255), thickness=2,
                             )
 
                 end_time = time.time()
@@ -248,22 +248,19 @@ def gen():
                 video_final,
                 "FPS: " + str(int(fps)),
                 (900, 480),
-                cv2.FONT_HERSHEY_DUPLEX,
+                cv2.FONT_HERSHEY_SIMPLEX,
                 fontScale=0.75,
                 color=(0, 0, 255),
                 thickness=2,
             )
 
-            # cv2.imshow('Car Speed', video_final)
-
             frame = cv2.imencode('.jpg', video_final)[1].tobytes()
             yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            time.sleep(0.1)
+            time.sleep(0.1)     # video stream
 
         else:
             print('Video Capture Failed')
             break
-            # frame = cv2.VideoCapture(input)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break   # loop break
