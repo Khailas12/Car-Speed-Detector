@@ -83,7 +83,10 @@ def gen():
     dataset_1 = cv2.CascadeClassifier(r"V-core\dataset\cars.xml")
     dataset_2 = cv2.CascadeClassifier(r"V-core\dataset\myhaar.xml")
 
-    video_c = cv2.VideoCapture(input)
+    global input
+    inp = os.path.join(app.config["UPLOAD_FOLDER"], input)
+
+    video_c = cv2.VideoCapture(inp)
     video_c.set(cv2.CAP_PROP_BUFFERSIZE, 2)
 
     frame_counter = 0
