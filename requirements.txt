@@ -1,3 +1,8 @@
 opencv-contrib-python==3.4.13.47
 opencv-python==4.5.3.56
 dlib==19.22.99
+requests==2.26.0
+numpy==1.19.5
+Flask==2.0.1
+Werkzeug==2.0.1
+Flask-Debug==0.4.3
