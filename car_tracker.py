@@ -28,10 +28,10 @@ def vehicle_speed(side1, side2):
 def multiple_car_tracker():
     frame_counter = 0
     current_car = 1     # car count starts from 1
-    car_tracker = {}    # dict
+    car_tracker = {}   
 
     car_side1 = {}
-    car_side2 = {}  # dict
+    car_side2 = {} 
     speed = [None] * 1000
     fps = 0
 

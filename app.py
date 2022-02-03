@@ -53,10 +53,6 @@ def upload_file():
             input = filename
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
-            # basepath = os.path.dirname(__file__)
-            # file.save(os.path.join(
-            # basepath, 'video_feed', secure_filename(file.filename)))
-
             flash("File successfully uploaded")
             return render_template("upload.html", fname=filename)
 
@@ -71,7 +67,7 @@ def vehicle_speed(side1, side2):
         math.pow(side2[0] - side1[0], 2) + math.pow(side2[1] - side1[1], 2)
     )
     # Netpbm color image format -> lowest common denominator color image file format.
-    ppm = 16.8
+    ppm = 16.8       # pixels per minut
     meters = pixels / ppm
     fps = 18
     speed = meters * fps * 3.6
@@ -110,19 +106,21 @@ def gen():
             # video screen size adjusted and set to full screen
             video = cv2.resize(video, (height, width))
             video_final = video.copy()
-            frame_counter += 1  # incrementing frames repeatedly
+            frame_counter += 1  # incrementing frames 
 
             delete_car = []
             for car_track in car_tracker.keys():
                 quality_tracker = car_tracker[car_track].update(video)
 
                 if quality_tracker < 7:
+                    # the cars which get tracked succesfully will get added to the delete car array.
                     delete_car.append(car_track)
 
             rectangle_color = (0, 255, 0)
             for car_track in car_tracker.keys():
                 tracked_position = car_tracker[car_track].get_position()
 
+                # this is not to get the default size of rectangle for each vehicle. instead it adapts according to the moment and size of the vehicle.
                 t_x = int(tracked_position.left())
                 t_y = int(tracked_position.top())
                 t_w = int(tracked_position.width())
@@ -160,19 +158,22 @@ def gen():
                             (x, y), (x + w, y + h),
                             (255, 0, 0), 2
                             )
-                        
+
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
                         cars2 = dataset_2.detectMultiScale(roi_gray)
 
-                        for (ex, ey, ew, eh) in cars2:
-                            cv2.rectangle(
-                                roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2
+                        # overwrites the previous detection rectangle following the increase in accuracy behalf of the dataset implemented
+                        for (ex, ey, ew, eh) in cars2:  
+                            cv2.rectangle(      
+                                roi_color, (ex, ey), 
+                                (ex + ew,ey + eh), 
+                                (0, 255, 0), 2
                             )
 
-                            data = str(w) + "," + str(h) + "," + \
-                                str(ew) + "," + str(eh)
+                            data = str(w) + "," + str(h) + "," + str(ew) + "," + str(eh)
 
+                            # The writerow method writes a row of data into the specified file.
                             writer_object = writer(f_object)
                             writer_object.writerow([data])
 
@@ -188,8 +189,7 @@ def gen():
                         match_car = None
 
                         for car_track in car_tracker.keys():
-                            tracked_position = car_tracker[car_track].get_position(
-                            )
+                            tracked_position = car_tracker[car_track].get_position()
 
                             t_x = int(tracked_position.left())
                             t_y = int(tracked_position.top())
@@ -262,8 +262,8 @@ def gen():
             print('Video Capture Failed')
             break
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break   # loop break
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break   # loop break
 
     print('\nClosing video')
     video_c.release()
