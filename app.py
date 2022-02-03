@@ -106,7 +106,7 @@ def gen():
             # video screen size adjusted and set to full screen
             video = cv2.resize(video, (height, width))
             video_final = video.copy()
-            frame_counter += 1  # incrementing frames 
+            frame_counter += 1  # incrementing frames
 
             delete_car = []
             for car_track in car_tracker.keys():
@@ -155,23 +155,24 @@ def gen():
 
                     for (x, y, w, h) in cars:
                         cv2.rectangle(video,
-                            (x, y), (x + w, y + h),
-                            (255, 0, 0), 2
-                            )
+                                      (x, y), (x + w, y + h),
+                                      (255, 0, 0), 2
+                                      )
 
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
                         cars2 = dataset_2.detectMultiScale(roi_gray)
 
                         # overwrites the previous detection rectangle following the increase in accuracy behalf of the dataset implemented
-                        for (ex, ey, ew, eh) in cars2:  
-                            cv2.rectangle(      
-                                roi_color, (ex, ey), 
-                                (ex + ew,ey + eh), 
+                        for (ex, ey, ew, eh) in cars2:
+                            cv2.rectangle(
+                                roi_color, (ex, ey),
+                                (ex + ew, ey + eh),
                                 (0, 255, 0), 2
                             )
 
-                            data = str(w) + "," + str(h) + "," + str(ew) + "," + str(eh)
+                            data = str(w) + "," + str(h) + "," + \
+                                str(ew) + "," + str(eh)
 
                             # The writerow method writes a row of data into the specified file.
                             writer_object = writer(f_object)
@@ -189,7 +190,8 @@ def gen():
                         match_car = None
 
                         for car_track in car_tracker.keys():
-                            tracked_position = car_tracker[car_track].get_position()
+                            tracked_position = car_tracker[car_track].get_position(
+                            )
 
                             t_x = int(tracked_position.left())
                             t_y = int(tracked_position.top())
