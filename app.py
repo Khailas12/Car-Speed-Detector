@@ -150,14 +150,14 @@ def gen():
                 )
 
                 with open(
-                    r"V-core\vehicle.csv" and r"V-core\cars.csv", "a", newline=""
+                    r"V-core\dataset\vehicle.csv" and r"V-core\dataset\cars.csv", "a", newline=""
                 ) as f_object:  # 2 more dataset to increase detection accuracy from kagggle
 
                     for (x, y, w, h) in cars:
                         cv2.rectangle(video,
-                            (x, y), (x + w, y + h),
-                            (255, 0, 0), 2
-                            )
+                                      (x, y), (x + w, y + h),
+                                      (255, 0, 0), 2
+                                      )
 
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
@@ -171,7 +171,8 @@ def gen():
                                 (0, 255, 0), 2
                             )
 
-                            data = str(w) + "," + str(h) + "," + str(ew) + "," + str(eh)
+                            data = str(w) + "," + str(h) + "," + \
+                                str(ew) + "," + str(eh)
 
                             # The writerow method writes a row of data into the specified file.
                             writer_object = writer(f_object)
@@ -219,7 +220,6 @@ def gen():
                             # both the axis, width and height
                             car_side1[current_car] = [x, y, w, h]
                             current_car += 1
-
 
             for i in car_side2.keys():
                 if frame_counter % 1 == 0:
