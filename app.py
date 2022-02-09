@@ -127,8 +127,9 @@ def gen():
                 t_h = int(tracked_position.height())
 
                 cv2.rectangle(
-                    video_final, (t_x, t_y), (t_x + t_w, t_y +
-                                              t_h), rectangle_color, 2
+                    video_final,
+                    (t_x, t_y), (t_x + t_w, t_y + t_h),
+                    rectangle_color, 2
                 )  # spots the vehicle and the color assigned is green
 
                 car_side2[car_track] = [t_x, t_y, t_w, t_h]
@@ -155,9 +156,9 @@ def gen():
 
                     for (x, y, w, h) in cars:
                         cv2.rectangle(video,
-                                      (x, y), (x + w, y + h),
-                                      (255, 0, 0), 2
-                                      )
+                            (x, y), (x + w, y + h),
+                            (255, 0, 0), 2
+                            )
 
                         roi_gray = gray_scale[y: y + h, x: x + w]
                         roi_color = video[y: y + h, x: x + w]
