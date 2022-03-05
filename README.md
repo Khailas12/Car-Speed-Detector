@@ -4,7 +4,7 @@ A Simple Data Science based project that detects the speed of the Car using Open
 
 ![home](static/home.png)
 
-![car_speed_detection.gif](static/car_speed_detection.gif)
+![car_speed_detection.gif](static/car_speed_detection_1.gif)
 
 ### Dependencies
 1. OpenCV-Python
