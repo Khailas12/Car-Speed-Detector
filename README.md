@@ -13,8 +13,10 @@ A Simple Data Science based project that detects the speed of the Car using Open
 4. Numpy
 
 ### Clone Repository
-1. Clone repo:
-`git clone https://github.com/Khailas12/Car-Speed-Detector`
+1. Clone repo: 
+```sh
+    git clone https://github.com/Khailas12/Car-Speed-Detector
+```
 
 2. cd (change directory) into V-core
 `cd V-core`
