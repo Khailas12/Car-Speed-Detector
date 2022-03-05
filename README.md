@@ -19,9 +19,9 @@ A Simple Data Science based project that detects the speed of the Car using Open
 
 ### Installation
 ```sh
-    $ python pip install -r requirements.txt
+$ python pip install -r requirements.txt
 ```
 ### How to Run?
 ```sh
-    $ python app.py
+$ python app.py
 ```
