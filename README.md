@@ -2,7 +2,7 @@
 
 A Simple Data Science based project that detects the speed of the Car using OpenCV and Flask (Interaction between frontend and backend)
 
-![static/car_speed_detection.gif](output.gif)
+![car_speed_detection.gif](static/car_speed_detection.gif)
 
 ### Dependencies
 1. OpenCV-Python
