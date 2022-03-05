@@ -17,6 +17,8 @@ A Simple Data Science based project that detects the speed of the Car using Open
 2. cd (change directory) into V-core
 `cd V-core`
 
+Make sure that the directory is set as `V-core` because I've made bunch of implementations including dataset connection with the exact name in path section.
+
 ### Installation
 ```sh
 $ python pip install -r requirements.txt
