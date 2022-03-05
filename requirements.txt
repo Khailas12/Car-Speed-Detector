@@ -3,6 +3,6 @@ opencv-python==4.1.2.30
 dlib==19.22.1
 requests==2.26.0
 numpy==1.16.6
-Flask==2.0.1
+Flask==1.1.4
 Werkzeug==2.0.1
 Flask-Debug==0.4.3
