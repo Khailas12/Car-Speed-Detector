@@ -266,9 +266,6 @@ def gen():
             print('Video Capture Failed')
             break
 
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break   # loop break
-
     print('\nClosing video')
     video_c.release()
     cv2.destroyAllWindows()
@@ -281,5 +278,3 @@ def video_feed():
 
 if __name__ == "__main__":
     app.run(port=3606, debug=True)
-
-print('Done')
