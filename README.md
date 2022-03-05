@@ -14,7 +14,7 @@ A Simple Data Science based project that detects the speed of the Car using Open
 
 ### Clone Repository
 ```sh
-    git clone https://github.com/Khailas12/Car-Speed-Detector
+git clone https://github.com/Khailas12/Car-Speed-Detector
 ```
 
 ### cd (change directory) into `cd V-core`
